@@ -16,9 +16,12 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text('MUSCLE BOY'),
         ),
-        body: Center(),
+        body: Center(
+          child: Image.asset('assets/images/muscle_boy1.png')
+        ),
       )
     );
   }
