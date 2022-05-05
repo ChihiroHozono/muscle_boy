@@ -10,12 +10,14 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  String sound_path = 'assets/sounds/power3.mp3';
+  String sound_path = 'assets/sounds/power2.mp3';
   String image_path = 'assets/images/muscle_boy1.png';
 
   @override
   Widget build(BuildContext context) {
+    bool isPlay;
     final player = AudioPlayer();
+    player.setAsset(sound_path,preload: true);
 
     return MaterialApp(
       title: 'MUSCLE BOY',
@@ -31,8 +33,15 @@ class MyApp extends StatelessWidget {
           child: GestureDetector(
             onTap: (){
               logger.info('on taped');
-              player.setAsset(sound_path);
-              player.play();
+              isPlay = player.playing;
+              if (isPlay){
+                logger.info('pause sound');
+                player.pause();
+              }else{
+                logger.info('play sound');
+                player.play();
+              }
+
             },
             child: Image.asset(image_path),
           )
