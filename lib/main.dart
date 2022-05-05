@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:simple_logger/simple_logger.dart';
+
+final logger = SimpleLogger();
 void main() {
   runApp(MyApp());
 }
@@ -7,8 +10,8 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  String path = 'assets/sounds/power3.mp3';
-
+  String sound_path = 'assets/sounds/power3.mp3';
+  String image_path = 'assets/images/muscle_boy1.png';
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +30,11 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: GestureDetector(
             onTap: (){
-              print('start');
-              player.setAsset(path);
+              logger.info('on taped');
+              player.setAsset(sound_path);
               player.play();
-              print('end');
             },
-            child: Image.asset('assets/images/muscle_boy1.png'),
+            child: Image.asset(image_path),
           )
         ),
       )
