@@ -1,3 +1,5 @@
+import 'dart:math';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:simple_logger/simple_logger.dart';
@@ -34,8 +36,10 @@ class Muscle extends StatefulWidget{
 class _MuscleState extends State<Muscle> {
   bool isPlay = false;
   final player = AudioPlayer();
-  String sound_path = 'assets/sounds/power2.mp3';
-  String image_path = 'assets/images/muscle_boy1.png';
+  double _currentSliderValue = 1.0;
+
+
+  String imagePath = 'assets/images/muscle_boy1.png';
 
   void _setPlayStatus(){
     setState(() {
@@ -43,9 +47,26 @@ class _MuscleState extends State<Muscle> {
     });
   }
 
+  void _ctrSound(){
+    String soundNum = (Random().nextInt(2) + 2).toString();
+    String soundPath = 'assets/sounds/power$soundNum.mp3';
+    logger.info(soundPath);
+    player.setAsset(soundPath, preload: false);
+    player.load();
+
+    if (isPlay){
+      logger.info('pause sound');
+      player.stop();
+    }else{
+      logger.info('play sound');
+      player.play();
+    }
+    _setPlayStatus();
+  }
+
   @override
   Widget build(BuildContext context){
-    player.setAsset(sound_path,preload: true);
+    player.setSpeed(_currentSliderValue);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -58,19 +79,30 @@ class _MuscleState extends State<Muscle> {
               GestureDetector(
                 onTap: (){
                   logger.info('on taped');
-                  _setPlayStatus();
-                  if (isPlay){
-                    logger.info('pause sound');
-                    player.pause();
-                  }else{
-                    logger.info('play sound');
-                    player.play();
-                  }
-
+                  _ctrSound();
                 },
-                child: Image.asset(image_path),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(imagePath),
+                )
               ),
-              Icon(isPlay ? Icons.play_arrow : Icons.pause),
+              Slider(
+                  value: _currentSliderValue,
+                  min: 0,
+                  max:10.0,
+                  divisions:10,
+                  onChanged: (double value) {
+                    setState(() {
+                      _currentSliderValue = value;
+                    }
+                  );
+                },
+              ),
+              IconButton(
+                iconSize: 50,
+                onPressed: _ctrSound,
+                icon: Icon(isPlay ? Icons.pause : Icons.play_arrow),
+              )
             ],
           )
       ),
