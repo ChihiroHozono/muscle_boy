@@ -38,12 +38,11 @@ class _MuscleState extends State<Muscle> {
   final player = AudioPlayer();
   double _currentSliderValue = 1.0;
 
-
   String imagePath = 'assets/images/muscle_boy1.png';
 
-  void _setPlayStatus(){
+  void _setPlayStatus([bool? play]){
     setState(() {
-      isPlay = player.playing;
+      isPlay = (play != null) ? play : player.playing;
     });
   }
 
@@ -66,6 +65,12 @@ class _MuscleState extends State<Muscle> {
 
   @override
   Widget build(BuildContext context){
+    player.playerStateStream.listen((state) {
+      switch (state.processingState){
+        case ProcessingState.completed:
+          _setPlayStatus(false);
+      }
+    });
     player.setSpeed(_currentSliderValue);
     return Scaffold(
       appBar: AppBar(
@@ -91,12 +96,13 @@ class _MuscleState extends State<Muscle> {
                   min: 0,
                   max:10.0,
                   divisions:10,
+                  label: _currentSliderValue.toString(),
                   onChanged: (double value) {
-                    setState(() {
-                      _currentSliderValue = value;
-                    }
-                  );
-                },
+                      setState(() {
+                        _currentSliderValue = value;
+                      }
+                    );
+                  },
               ),
               IconButton(
                 iconSize: 50,
